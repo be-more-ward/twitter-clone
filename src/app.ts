@@ -1,5 +1,6 @@
-import "dotenv/config"
 import "express-async-errors"
+import "dotenv/config"
+
 import express from "express"
 const app = express()
 
@@ -11,6 +12,7 @@ import authRouter from "./routes/authRoutes"
 
 //Middlewares
 import { notFound } from "./middleware/not-found"
+import { errorHandler } from "./middleware/errorHandler"
 
 app.get("/",(req,res)=>{
     res.send("test")
@@ -19,6 +21,7 @@ app.get("/",(req,res)=>{
 app.use("/api/v1/auth", authRouter)
 
 app.use(notFound)
+app.use(errorHandler)
 
 
 const port = process.env.PORT || 3000
