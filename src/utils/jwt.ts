@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken"
 
-interface IUserDetailsJWT {
+export interface IUserDetailsJWT {
     userId: string,
     username: string
 }

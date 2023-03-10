@@ -9,6 +9,7 @@ app.use(express.json())
 
 //Routers
 import authRouter from "./routes/authRoutes"
+import tweetsRouter from "./routes/tweetRoutes"
 
 //Middlewares
 import { notFound } from "./middleware/not-found"
@@ -19,6 +20,7 @@ app.get("/",(req,res)=>{
 })
 
 app.use("/api/v1/auth", authRouter)
+app.use("/api/v1/tweets", tweetsRouter)
 
 app.use(notFound)
 app.use(errorHandler)
