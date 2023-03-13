@@ -5,7 +5,7 @@ import auth from "../middleware/authentication";
 
 const router = Router()
 
-router.post("/", auth, createTweet)
+router.post("/:username", auth, createTweet)
 router.get("/:username", getAllTweets)
 router.get("/:username/status/:tweetId", getSingleTweet)
 
