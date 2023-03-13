@@ -38,3 +38,19 @@ export const getAllTweets = async (req: Request, res:Response) => {
 
     res.status(200).json(tweets)
 }
+
+export const getSingleTweet = async (req: Request, res:Response) => {
+    const {tweetId} = req.params
+
+    const tweet = await prisma.tweet.findFirst({
+        where:{
+            id: tweetId
+        }
+    })
+    
+    if (!tweet){
+        throw new Error(`Tweet with id: ${tweetId}, does not exist`)
+    }
+
+    res.status(200).json(tweet)
+}
