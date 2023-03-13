@@ -13,7 +13,28 @@ export const createTweet = async (req: Request, res:Response)=>{
             author: {connect:{id: userId}}
         }
     })
-    
+
     res.status(201).json(tweet)
 }
 
+export const getAllTweets = async (req: Request, res:Response) => {
+    const {username} = req.params
+
+    const user = await prisma.user.findFirst({
+        where: {username}
+    })
+
+    if (!user){
+        throw new Error("The user does not exist")
+    }
+
+    // get all tweets that user posted but not the comments on other tweets
+    const tweets = await prisma.tweet.findMany({
+        where:{
+            authorId: user.id,
+            parent: null
+        }
+    })
+
+    res.status(200).json(tweets)
+}
