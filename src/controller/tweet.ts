@@ -1,18 +1,28 @@
-import { PrismaClient } from "@prisma/client"
+import { Prisma, PrismaClient } from "@prisma/client"
 import { Request, Response } from "express"
 
 const prisma = new PrismaClient()
 
 export const createTweet = async (req: Request, res:Response)=>{
-    const { content } = req.body
+    const { content, parentId } = req.body
     const { userId } = req.user
    
-    const tweet = await prisma.tweet.create({
-        data: {
+    // Create args for new tweet
+    const newTweet: Prisma.TweetCreateArgs = {
+        data:{
             content: content,
-            author: {connect:{id: userId}}
+            author: {connect:{id:userId}}
         }
-    })
+    }
+    
+    // if it's a reply tweet(comment), attach the parent-tweetId to the 'newTweet' 
+    if (parentId){
+        newTweet.data.parent = {
+            connect:{id:parentId}
+        }
+    }
+
+    const tweet = await prisma.tweet.create(newTweet)
 
     res.status(201).json(tweet)
 }
