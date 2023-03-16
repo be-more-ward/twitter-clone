@@ -1,5 +1,7 @@
 import { Prisma, PrismaClient } from "@prisma/client"
 import { Request, Response } from "express"
+import { StatusCodes } from "http-status-codes"
+import { AppError } from "../error/AppError"
 
 const prisma = new PrismaClient()
 
@@ -35,7 +37,7 @@ export const getAllTweets = async (req: Request, res:Response) => {
     })
 
     if (!user){
-        throw new Error("The user does not exist")
+        throw new AppError({message:"The user does not exist", httpCode: StatusCodes.NOT_FOUND})
     }
 
     // get all tweets that user posted but not the comments on other tweets
@@ -59,7 +61,7 @@ export const getSingleTweet = async (req: Request, res:Response) => {
     })
     
     if (!tweet){
-        throw new Error(`Tweet with id: ${tweetId}, does not exist`)
+        throw new AppError({message:`Tweet with id: ${tweetId}, does not exist`, httpCode: StatusCodes.NOT_FOUND})
     }
 
     res.status(200).json(tweet)
