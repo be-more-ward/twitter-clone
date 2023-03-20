@@ -9,5 +9,6 @@ export const errorHandler = (err:Error, req:Request, res:Response, next:NextFunc
         return res.status(err.httpCode).json({msg:err.message})
     }
 
+    console.log(err);
     return res.status(500).json({msg:`Internal server error`})
 }

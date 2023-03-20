@@ -16,11 +16,17 @@ interface IUserData {
 
 export const register =async(req: Request, res:Response)=>{
     const {email, username, password} = req.body
-
-    const userAlreadyExist = await prisma.user.findFirst({where:{OR:{email, username}}})
+    
+    const userAlreadyExist = await prisma.user.findFirst({
+        where:{
+            OR:[{email}, {username}]
+        }
+    })
+    
     if (userAlreadyExist){
         throw new AppError({message:"Username or Email already in use", httpCode: StatusCodes.BAD_REQUEST})
     }
+
     const hashedPassword = await hashPassword(password)
     const userData:IUserData = {email, username, password: hashedPassword}
 
