@@ -66,3 +66,34 @@ export const getSingleTweet = async (req: Request, res:Response) => {
 
     res.status(200).json(tweet)
 }
+
+export const likeTweet = async (req: Request, res:Response) =>{
+    const {tweetId} = req.params
+    const {userId} = req.user
+
+    console.log(tweetId, userId);
+    
+
+    const tweet = await prisma.tweet.findFirst({
+        where:{
+            id: tweetId
+        }
+    })
+
+    if (!tweet) {
+        throw new AppError({message:`Tweet with id: ${tweetId}, does not exist`, httpCode: StatusCodes.NOT_FOUND})
+    }
+
+    const likedTweet = await prisma.tweetLikes.create({
+        data:{
+            author: {
+                connect: {id: userId}
+            },
+            tweet: {
+                connect: {id: tweetId}
+            }
+        }
+    })
+
+    res.status(201).send()
+}

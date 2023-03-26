@@ -11,19 +11,29 @@ datasource db {
 }
 
 model User {
-  id       String  @id @default(uuid())
-  username String
-  email    String  @unique
-  password String
-  tweets   Tweet[]
+  id          String       @id @default(uuid())
+  username    String
+  email       String       @unique
+  password    String
+  tweets      Tweet[]
+  likedTweets TweetLikes[]
 }
 
 model Tweet {
-  id       String  @id @default(uuid())
+  id       String       @id @default(uuid())
   content  String
-  author   User    @relation(fields: [authorId], references: [id])
+  author   User         @relation(fields: [authorId], references: [id])
   authorId String
-  parent   Tweet?  @relation("Tweet Comments", fields: [parentId], references: [id])
+  parent   Tweet?       @relation("Tweet Comments", fields: [parentId], references: [id])
   parentId String?
-  comments Tweet[] @relation("Tweet Comments")
+  comments Tweet[]      @relation("Tweet Comments")
+  likes    TweetLikes[]
+}
+
+model TweetLikes {
+  id       String @id @default(uuid())
+  author   User   @relation(fields: [authorId], references: [id])
+  authorId String
+  tweet    Tweet  @relation(fields: [tweetId], references: [id])
+  tweetId  String
 }
