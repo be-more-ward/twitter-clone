@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/server.ts"
+    "dev": "nodemon src/server.ts",
+    "studio:test": "dotenv -e .env.test -- npx prisma studio ",
+    "migrate:postgres": "dotenv -e .env.test -- npx prisma migrate deploy",
+    "test": "dotenv -e .env.test -- jest -i"
   },
   "keywords": [],
   "author": "",
