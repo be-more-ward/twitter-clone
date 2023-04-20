@@ -57,7 +57,8 @@ export const getSingleTweet = async (req: Request, res:Response) => {
     const tweet = await prisma.tweet.findFirst({
         where:{
             id: tweetId
-        }
+        },
+        include:{comments:true}
     })
     
     if (!tweet){
