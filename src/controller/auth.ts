@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 import { Request, Response } from 'express'
 import { comparePasswords, hashPassword } from '../utils/bcrypt'
-import { createToken } from '../utils/jwt'
+import { createToken, attachCookiesToResponse } from '../utils/jwt'
 
 import { AppError } from '../error/AppError'
 import { StatusCodes } from 'http-status-codes'
@@ -61,10 +61,23 @@ export const login = async (req: Request, res:Response)=>{
         throw new AppError({message:"credentials are invalid", httpCode: StatusCodes.UNAUTHORIZED })
     }
     
-    // create jwt
-    const token = createToken({ userId:user.id, username:user.username })
+    // create jwts
+    const accessToken = createToken({ userId:user.id, username:user.username },"30s")
+    const refreshToken = createToken({ userId:user.id, username:user.username }, "60s")
+
+    //attach refresh token to cookies
+    attachCookiesToResponse(res, refreshToken)
+
+    // save refreshToken with user
+    await prisma.user.update({
+        where: {
+            id: user.id
+        },
+        data: {
+            refreshToken: refreshToken
+        }
+    })
     
-    // response with username  and token
-    res.status(200).json({user:user.username, token})
-        
-    }
+    // response with username  and access token
+    res.status(200).json({user:user.username, accessToken})  
+}

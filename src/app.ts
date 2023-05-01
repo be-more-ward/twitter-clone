@@ -12,6 +12,7 @@ app.use(cookieParser())
 //Routers
 import authRouter from "./routes/authRoutes"
 import tweetsRouter from "./routes/tweetRoutes"
+import refreshRouter from "./routes/refresh"
 
 //Middlewares
 import { notFound } from "./middleware/not-found"
@@ -23,6 +24,7 @@ app.get("/",(req,res)=>{
 
 app.use("/api/v1/auth", authRouter)
 app.use("/api/v1/tweets", tweetsRouter)
+app.use("/api/v1", refreshRouter)
 
 app.use(notFound)
 app.use(errorHandler)
