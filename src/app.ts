@@ -2,10 +2,12 @@ import "express-async-errors"
 import "dotenv/config"
 
 import express from "express"
+import cookieParser from "cookie-parser"
+
 const app = express()
 
 app.use(express.json())
-
+app.use(cookieParser())
 
 //Routers
 import authRouter from "./routes/authRoutes"
