@@ -81,3 +81,36 @@ export const login = async (req: Request, res:Response)=>{
     // response with username  and access token
     res.status(200).json({user:user.username, accessToken})  
 }
+
+export const logout = async (req:Request, res:Response) =>{
+    const cookies = req.cookies
+
+    if (!cookies?.refreshToken) return res.sendStatus(StatusCodes.NO_CONTENT)
+    
+    const refreshToken = cookies.refreshToken
+    
+    const user = await prisma.user.findFirst({
+        where:{
+            refreshToken: refreshToken
+        }
+    })
+
+    // cookies went send but no match with refreshToken in db
+    if (!user){
+        res.clearCookie("refreshToken", {httpOnly:true, maxAge:60* 1000})
+        return res.sendStatus(StatusCodes.NO_CONTENT)
+    }
+
+    // delete refreshToken from user in db
+    await prisma.user.update({
+        where:{
+            id: req.user.userId
+        },
+        data:{
+            refreshToken: ""
+        }
+    })
+    
+    res.clearCookie("refreshToken", {httpOnly:true, maxAge: 60*1000 })
+    res.sendStatus(StatusCodes.NO_CONTENT)
+}
